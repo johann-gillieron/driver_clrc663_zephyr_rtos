@@ -1,0 +1,25 @@
+# Copyright (c) 2024 Johann Gilliéron
+# SPDX-License-Identifier: Apache-2.0
+
+description: |
+  clrc663 is a NFC reader module.
+
+compatible: "nxp,clrc663"
+
+include: [base.yaml, spi-device.yaml]
+
+properties:
+  reg:
+    required: true
+
+  shutdown-gpios:
+    type: phandle-array
+    required: true
+    description: |
+      Chip Enable GPIO (active high). It is used to activate the chip RX or TX mode. If not configured, the driver will use three-wires behaviour and multiplex with the SPI CSN signal.
+
+  irq-gpios:
+    type: phandle-array
+    required: false
+    description: |
+      Chip Interrupt signal (active low). If not selected, do not use interrupts.

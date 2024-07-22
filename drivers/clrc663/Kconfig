@@ -1,0 +1,37 @@
+menuconfig CLRC663
+	bool "CLRC663 NFC command support"
+
+if CLRC663
+
+config CLRC663_INIT_PRIORITY
+	int "Lock init priority"
+	default 90
+	help
+	  clrc663 initialization priority.
+
+config CLRC663_TRIGGER
+	bool "CLRC663 trigger with irq gpio"
+	depends on CLRC663
+	help
+	  When enabled, the clrc663 FIFO read is triggered by irq gpio and
+	  not by polling.
+
+config CLRC663_RX_TIMEOUT
+	int "Timout for receive operation"
+	depends on CLRC663
+	default 5
+	help
+	  clrc663 timeout for receiving data, in ms.
+
+config CLRC663_RX_P4_TIMEOUT
+	int "Timout for receive operation"
+	depends on CLRC663
+	default 100
+	help
+	  clrc663 timeout for receiving data for the ISO 14443 layer 4, in ms.
+
+module = CLRC663
+module-str = clrc663
+source "subsys/logging/Kconfig.template.log_config"
+
+endif # CLRC663
