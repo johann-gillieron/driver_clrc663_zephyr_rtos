@@ -17,9 +17,9 @@ extern "C" {
 
 /** @cond INTERNAL_HIDDEN */
 
-typedef void (*nfc_rf_field_control_t)(const struct device *dev, bool mode);
-typedef void (*nfc_lpcd_calibration_t)(const struct device *dev, uint8_t *I_measured, uint8_t *Q_measured);
-typedef void (*nfc_lpcd_activate_t)(const struct device *dev, uint8_t I_measured, uint8_t Q_measured, uint8_t threshold);
+typedef uint8_t (*nfc_rf_field_control_t)(const struct device *dev, bool mode);
+typedef uint8_t (*nfc_lpcd_calibration_t)(const struct device *dev, uint8_t *I_measured, uint8_t *Q_measured);
+typedef uint8_t (*nfc_lpcd_activate_t)(const struct device *dev, uint8_t I_measured, uint8_t Q_measured, uint8_t threshold);
 typedef uint8_t (*nfc_card_select_t)(const struct device *dev, uint8_t* uid, uint8_t* sak, uint8_t* atqa, uint8_t* ats);
 typedef int16_t (*nfc_card_iso14443_4_com_t)(const struct device *dev, uint8_t* data_tx, uint8_t data_tx_len, uint8_t* data_rx, uint8_t data_rx_len);
 
@@ -77,9 +77,9 @@ static inline int16_t z_impl_nfc_card_iso14443_4_com(const struct device *dev, u
  * @param dev nfc reader instance.
  * @param mode true to enable the RF field, false to disable it.
  */
-__syscall void nfc_rf_field_control(const struct device *dev, bool mode);
+__syscall uint8_t nfc_rf_field_control(const struct device *dev, bool mode);
 
-static inline void z_impl_nfc_rf_field_control(const struct device *dev, bool mode)
+static inline uint8_t z_impl_nfc_rf_field_control(const struct device *dev, bool mode)
 {
 	const struct nfc_reader_api *api = (const struct nfc_reader_api *)dev->api;
 	return api->rf_field_control(dev, mode);
@@ -92,9 +92,9 @@ static inline void z_impl_nfc_rf_field_control(const struct device *dev, bool mo
  * @param I_measured pointer to the I measured value.
  * @param Q_measured pointer to the Q measured value.
  */
-__syscall void nfc_lpcd_calibration(const struct device *dev, uint8_t *I_measured, uint8_t *Q_measured);
+__syscall uint8_t nfc_lpcd_calibration(const struct device *dev, uint8_t *I_measured, uint8_t *Q_measured);
 
-static inline void z_impl_nfc_lpcd_calibration(const struct device *dev, uint8_t *I_measured, uint8_t *Q_measured)
+static inline uint8_t z_impl_nfc_lpcd_calibration(const struct device *dev, uint8_t *I_measured, uint8_t *Q_measured)
 {
 	const struct nfc_reader_api *api = (const struct nfc_reader_api *)dev->api;
 	return api->lpcd_calibration(dev, I_measured, Q_measured);
@@ -107,9 +107,9 @@ static inline void z_impl_nfc_lpcd_calibration(const struct device *dev, uint8_t
  * @param I_threshold I threshold value.
  * @param Q_threshold Q threshold value.
  */
-__syscall void nfc_lpcd_activate(const struct device *dev, uint8_t I_measured, uint8_t Q_measured, uint8_t threshold);
+__syscall uint8_t nfc_lpcd_activate(const struct device *dev, uint8_t I_measured, uint8_t Q_measured, uint8_t threshold);
 
-static inline void z_impl_nfc_lpcd_activate(const struct device *dev, uint8_t I_measured, uint8_t Q_measured, uint8_t threshold)
+static inline uint8_t z_impl_nfc_lpcd_activate(const struct device *dev, uint8_t I_measured, uint8_t Q_measured, uint8_t threshold)
 {
 	const struct nfc_reader_api *api = (const struct nfc_reader_api *)dev->api;
 	return api->lpcd_activate(dev, I_measured, Q_measured, threshold);

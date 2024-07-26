@@ -38,6 +38,8 @@ void clrc663_cmd_authenticate(const struct device *dev, uint8_t key_nr, uint8_t 
 void clrc663_cmd_load_key(const struct device *dev, const uint8_t* key);
 
 // Utility functions. (private functions)
+void clrc663_rf_field_on(const struct device *dev);
+void clrc663_rf_field_off(const struct device *dev);
 void clrc663_init_registers(const struct device *dev);
 uint8_t clrc663_get_version(const struct device *dev);
 void clrc663_flush_fifo(const struct device *dev);
@@ -77,13 +79,13 @@ uint8_t clrc663_iso14443p4_DESELECT(const struct device *dev);
 int8_t clrc663_iso14443a_HLTA(const struct device *dev);
 
 // API functions
-static const struct nfc_reader_api clrc663_api;
-static int clrc663_init(const struct device *dev);
+const struct nfc_reader_api clrc663_api;
+int clrc663_init(const struct device *dev);
 static uint8_t clrc663_card_select(const struct device *dev, uint8_t* uid, uint8_t* sak, uint8_t* atqa, uint8_t* ats);
 static int16_t clrc663_iso14443_4_communication(const struct device *dev, uint8_t* data_tx, uint16_t data_tx_len, uint8_t* data_rx, uint16_t data_rx_len);
-static void clrc663_rf_field_control(const struct device *dev, bool on);
-static void clrc663_lpcd_calibration(const struct device *dev, uint8_t *I_result, uint8_t *Q_result);
-static void clrc663_lpcd_activate(const struct device *dev, uint8_t I_mesured, uint8_t Q_mesured, uint8_t threshold);
+static uint8_t clrc663_rf_field_control(const struct device *dev, bool on);
+static uint8_t clrc663_lpcd_calibration(const struct device *dev, uint8_t *I_result, uint8_t *Q_result);
+static uint8_t clrc663_lpcd_activate(const struct device *dev, uint8_t I_mesured, uint8_t Q_mesured, uint8_t threshold);
 
 #endif // CLRC663_H
 

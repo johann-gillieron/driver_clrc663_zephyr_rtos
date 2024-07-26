@@ -344,10 +344,11 @@ void clrc663_cmd_load_key(const struct device *dev, const uint8_t* key) {
  *
  * \return 0 on success, negative on error.
 */
-static void clrc663_rf_field_on(const struct device *dev) {
+void clrc663_rf_field_on(const struct device *dev) {
   struct clrc663_data *data = dev->data;
   clrc663_write_reg(dev, CLRC663_REG_DRVMOD, 0x8E);
   data->rf_field_on = true;
+  k_sleep(K_MSEC(10));
 }
 
 /*! \brief Turn off the RF field.
@@ -358,10 +359,11 @@ static void clrc663_rf_field_on(const struct device *dev) {
  *
  * \return 0 on success, negative on error.
 */
-static void clrc663_rf_field_off(const struct device *dev) {
+void clrc663_rf_field_off(const struct device *dev) {
   struct clrc663_data *data = dev->data;
   clrc663_write_reg(dev, CLRC663_REG_DRVMOD, 0x86);
   data->rf_field_on = false;
+  k_sleep(K_MSEC(10));
 }
 
 /*
@@ -379,8 +381,8 @@ void clrc663_init_registers(const struct device *dev) {
   //clrc663_write_reg(dev, CLRC663_REG_TXL, 0x06); // Set the OvershootT1
   clrc663_load_predefined_protocol(dev, data->protocol);
   data->LPCD_enabled = false;
-
-  clrc663_rf_field_off(dev); // Switch RF field on and 0x86 to switch it off
+  clrc663_write_reg(dev, CLRC663_REG_DRVMOD, 0x8E);
+  data->rf_field_on = true;
 }
 
 /*
@@ -1423,7 +1425,7 @@ int8_t clrc663_iso14443a_HLTA(const struct device *dev) {
  *
  * @return 0 on success, negative on error.
  */
-static int clrc663_init(const struct device *dev) {
+int clrc663_init(const struct device *dev) {
 	const struct clrc663_config *config = dev->config;
   struct clrc663_data *data = dev->data;
 	int ret;
@@ -1471,6 +1473,7 @@ static int clrc663_init(const struct device *dev) {
   // Power ON the device.
   clrc663_poweron(dev);
   clrc663_init_registers(dev);
+  clrc663_rf_field_off(dev);
   
   // test the SPI connection
   uint8_t version = clrc663_get_version(dev);
@@ -1499,7 +1502,7 @@ static int clrc663_init(const struct device *dev) {
  *
  * @return uid length on success, 0 on failure.
  */
-static uint8_t clrc663_card_select(const struct device *dev, uint8_t uid[10], uint8_t sak[1], uint8_t atqa[2], uint8_t ats[32]) {
+static uint8_t clrc663_card_select(const struct device *dev, uint8_t *uid, uint8_t *sak, uint8_t *atqa, uint8_t *ats) {
   struct clrc663_data *data = dev->data;
   uint8_t uid_len;
   int8_t status;
@@ -1752,13 +1755,13 @@ static int16_t clrc663_iso14443_4_communication(const struct device *dev, uint8_
  * \param[in] dev The device structure.
  * \param[in] on The RF field state.
 */
-static void clrc663_rf_field_control(const struct device *dev, bool on) {
+static uint8_t clrc663_rf_field_control(const struct device *dev, bool on) {
   if (on) {
     clrc663_rf_field_on(dev);
   } else {
     clrc663_rf_field_off(dev);
   }
-  k_sleep(K_MSEC(10)); // Wait for the RF field to be stable
+  return 0;
 }
 
 /*! \brief Perform the calibration of the LPCD.
@@ -1771,10 +1774,11 @@ static void clrc663_rf_field_control(const struct device *dev, bool on) {
  *
  * \return 0 on success, negative on error.
 */
-static void clrc663_lpcd_calibration(const struct device *dev, uint8_t *I_result, uint8_t *Q_result) {
+static uint8_t clrc663_lpcd_calibration(const struct device *dev, uint8_t *I_result, uint8_t *Q_result) {
   clrc663_AN11145_start_IQ_measurement(dev);
   k_sleep(K_MSEC(10));
   clrc663_AN11145_stop_IQ_measurement(dev, I_result, Q_result);
+  return 0;
 }
 
 /*! \brief Perform the activation of LPCD.
@@ -1786,8 +1790,9 @@ static void clrc663_lpcd_calibration(const struct device *dev, uint8_t *I_result
  * \param[in] Q_threshold The threshold of the Q measurement.
  *
 */
-static void clrc663_lpcd_activate(const struct device *dev, uint8_t I_mesured, uint8_t Q_mesured, uint8_t threshold) {
+static uint8_t clrc663_lpcd_activate(const struct device *dev, uint8_t I_mesured, uint8_t Q_mesured, uint8_t threshold) {
   clrc663_AN11145_activate_LPCD(dev, I_mesured, Q_mesured, threshold);
+  return 0;
 }
 
 // TODO: Implement the following functions
@@ -1795,7 +1800,7 @@ static void clrc663_lpcd_activate(const struct device *dev, uint8_t I_mesured, u
 // static int8_t clrc663_powercontrol(const struct device *dev);
 
 // API definition
-static const struct nfc_reader_api clrc663_api = {
+const struct nfc_reader_api clrc663_api = {
 	.nfc_select = clrc663_card_select,
 	.nfc_layer4_com = clrc663_iso14443_4_communication,
   .rf_field_control = clrc663_rf_field_control,
