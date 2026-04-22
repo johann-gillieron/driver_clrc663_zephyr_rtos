@@ -25,13 +25,13 @@ Pour installer ce driver, veuillez suivre les étapes ci-dessous :
 
 1. Clonez ce dépôt dans votre espace de travail Zephyr.
    ```sh
-   git clone <url_du_dépôt>
+   git clone https://github.com/johann-gillieron/driver_clrc663_zephyr_rtos.git
 
 2. Ajoutez le driver à la racine de Zephyr en modifiant les fichiers de configuration appropriés:
     - Ajoutez "add_subdirectory_ifdef(CONFIG_CLRC663 clrc663)" à la fin du fichier drivers/CMakeLists.txt
     - Ajoutez "source "drivers/clrc663/Kconfig"" à la fin du fichier drivers/Kconfig
 
-4. Compilez et flashez votre projet sur le matériel cible.
+3. Compilez et flashez votre projet sur le matériel cible.
 
 # Driver CLRC663 for Zephyr RTOS (EN)
 
@@ -43,16 +43,11 @@ This driver was developed as part of a Bachelor's thesis to read and write DESFi
 
 The provided API, `zephyr/drivers/nfc.h`, offers the following features:
 
-- **Enable RF field**: The RF field is disabled after chip initialization.
-
+- **Enable RF field**: The RF field is disabled after chip initialization
 - **Disable RF field**.
-
 - **Select and activate an ISO14443A NFC tag**: Returns the UID length, UID, SAK, ATQA, and ATS if the PICC is ISO14443-4 compliant.
-
 - **Communicate directly with the PICC** using the ISO14443-4 protocol.
-
 - **Calibrate LCPD (Low Power Card Detection)**.
-
 - **Enable LCPD**: A switch is triggered on the chip's physical IRQ pin when a PICC is detected.
 
 ## Usage
@@ -64,15 +59,11 @@ The rest of the bachelor's project can be used as an example and can be found [h
 To install this driver, please follow the steps below:
 
 1. Clone this repository into your Zephyr workspace.
+   ```sh
+   git clone https://github.com/johann-gillieron/driver_clrc663_zephyr_rtos.git
 
-```sh
+2. Add the driver to the Zephyr root directory by modifying the appropriate configuration files
+   - Add "add_subdirectory_ifdef(CONFIG_CLRC663 clrc663)" to the end of the drivers/CMakeLists.txt file
+   - Add "source "drivers/clrc663/Kconfig"" to the end of the drivers/Kconfig file
 
-git clone <repository_url>
-
-2. Add the driver to the Zephyr root directory by modifying the appropriate configuration files:
-
-- Add "add_subdirectory_ifdef(CONFIG_CLRC663 clrc663)" to the end of the drivers/CMakeLists.txt file
-
-- Add "source "drivers/clrc663/Kconfig"" to the end of the drivers/Kconfig file
-
-4. Compile and flash your project to the target hardware.
+3. Compile and flash your project to the target hardware.
