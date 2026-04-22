@@ -1,6 +1,6 @@
-# Driver CLRC663 pour Zephyr RTOS
+# Driver CLRC663 pour Zephyr RTOS (FR)
 
-Ce dépôt contient un driver permettant d'utiliser le lecteur NFC CLRC663 en SPI avec Zephyr RTOS via une API NFC simple. Il est conçu pour la version 3.5.99 du noyau Zephyr.
+Ce dépôt contient un driver permettant d'utiliser le lecteur NFC CLRC663 en SPI avec Zephyr RTOS via une API NFC simple. Il est conçu pour la version `3.5.99` du noyau Zephyr.
 
 Ce driver a été développé dans le cadre d'un travail de Bachelor pour lire et écrire des tags NFC DESFire à l'aide du CLRC663.
 
@@ -17,7 +17,7 @@ L'API fournie, `zephyr/drivers/nfc.h`, propose les fonctionnalités suivantes :
 
 ## Utilisation
 
-Un exemple d'utilisation sera bientôt disponible.
+Le reste du travail de bachelor peut être utilisé comme exemple ce trouve [ici](https://github.com/johann-gillieron/acces_securite_par_badge_rfid).
 
 ## Installation
 
@@ -33,9 +33,46 @@ Pour installer ce driver, veuillez suivre les étapes ci-dessous :
 
 4. Compilez et flashez votre projet sur le matériel cible.
 
-## Contributions
+# Driver CLRC663 for Zephyr RTOS (EN)
 
-Les contributions sont les bienvenues. Veuillez soumettre des pull requests ou ouvrir des issues pour signaler des bugs ou proposer des améliorations.
+This repository contains a driver for using the CLRC663 NFC reader via SPI with Zephyr RTOS using a simple NFC API. It was designed for Zephyr kernel version `3.5.99`.
 
-## Licence
-Ce projet est sous licence MIT.
+This driver was developed as part of a Bachelor's thesis to read and write DESFire NFC tags using the CLRC663.
+
+## NFC API Features (nfc.h)
+
+The provided API, `zephyr/drivers/nfc.h`, offers the following features:
+
+- **Enable RF field**: The RF field is disabled after chip initialization.
+
+- **Disable RF field**.
+
+- **Select and activate an ISO14443A NFC tag**: Returns the UID length, UID, SAK, ATQA, and ATS if the PICC is ISO14443-4 compliant.
+
+- **Communicate directly with the PICC** using the ISO14443-4 protocol.
+
+- **Calibrate LCPD (Low Power Card Detection)**.
+
+- **Enable LCPD**: A switch is triggered on the chip's physical IRQ pin when a PICC is detected.
+
+## Usage
+
+The rest of the bachelor's project can be used as an example and can be found [here](https://github.com/johann-gillieron/acces_securite_par_badge_rfid).
+
+## Installation
+
+To install this driver, please follow the steps below:
+
+1. Clone this repository into your Zephyr workspace.
+
+```sh
+
+git clone <repository_url>
+
+2. Add the driver to the Zephyr root directory by modifying the appropriate configuration files:
+
+- Add "add_subdirectory_ifdef(CONFIG_CLRC663 clrc663)" to the end of the drivers/CMakeLists.txt file
+
+- Add "source "drivers/clrc663/Kconfig"" to the end of the drivers/Kconfig file
+
+4. Compile and flash your project to the target hardware.
